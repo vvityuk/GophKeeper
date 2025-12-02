@@ -5,9 +5,19 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/victor/gophkeeper/internal/server/crypto"
 )
+
+func init() {
+	// Инициализируем JWT конфигурацию для тестов
+	crypto.SetJWTConfig(
+		"test-secret-key-for-testing-only-min-32-chars",
+		time.Hour,
+		7*24*time.Hour,
+	)
+}
 
 func TestAuthMiddleware(t *testing.T) {
 	tests := []struct {

@@ -136,14 +136,23 @@ func (m *mockStorage) UpdateDataRecord(ctx context.Context, recordID string, use
 	// Симулируем поведение sqlite.go: увеличиваем версию и проверяем старую
 	// record.Version содержит текущую версию (до увеличения)
 	oldVersion := record.Version
-	record.Version++
 	// Проверка версии для оптимистичной блокировки (как в sqlite WHERE version = ?)
 	// Проверяем, что существующая версия равна той, что была до увеличения
 	if existing.Version != oldVersion {
 		return storage.ErrVersionConflict
 	}
+	// Увеличиваем версию (как в sqlite.go: record.Version++)
+	record.Version++
+	record.UpdatedAt = time.Now()
 	// Обновляем запись с новой версией
 	m.dataRecords[recordID] = record
+	// Обновляем в userData тоже
+	for i, r := range m.userData[userID] {
+		if r.ID == recordID {
+			m.userData[userID][i] = record
+			break
+		}
+	}
 	return nil
 }
 

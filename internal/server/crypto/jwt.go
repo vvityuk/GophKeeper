@@ -9,15 +9,22 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-const (
+var (
 	// JWTSecretKey используется для подписи JWT токенов.
-	// В production должен быть установлен через переменную окружения.
-	JWTSecretKey = "your-secret-key-change-in-production"
+	// Должен быть установлен через SetJWTConfig.
+	JWTSecretKey string
 	// JWTExpirationTime определяет время жизни JWT токена.
-	JWTExpirationTime = 1 * time.Hour
+	JWTExpirationTime time.Duration
 	// RefreshTokenExpirationTime определяет время жизни refresh токена.
-	RefreshTokenExpirationTime = 7 * 24 * time.Hour
+	RefreshTokenExpirationTime time.Duration
 )
+
+// SetJWTConfig устанавливает конфигурацию JWT.
+func SetJWTConfig(secretKey string, expirationTime, refreshExpirationTime time.Duration) {
+	JWTSecretKey = secretKey
+	JWTExpirationTime = expirationTime
+	RefreshTokenExpirationTime = refreshExpirationTime
+}
 
 // JWTClaims представляет claims для JWT токена.
 type JWTClaims struct {
@@ -70,4 +77,3 @@ func GenerateRefreshToken() (string, error) {
 	// Конвертируем в hex строку
 	return hex.EncodeToString(token), nil
 }
-

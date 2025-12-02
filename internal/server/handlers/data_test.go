@@ -21,7 +21,7 @@ func setUserIDInContext(ctx context.Context, userID string) context.Context {
 
 func TestDataHandler_GetAllData(t *testing.T) {
 	mockStorage := newMockStorage()
-	handler := NewDataHandler(mockStorage)
+	handler := NewDataHandler(mockStorage, "test-master-password")
 
 	userID := "test-user-id"
 	ctx := context.Background()
@@ -107,7 +107,7 @@ func TestDataHandler_GetAllData(t *testing.T) {
 
 func TestDataHandler_GetData(t *testing.T) {
 	mockStorage := newMockStorage()
-	handler := NewDataHandler(mockStorage)
+	handler := NewDataHandler(mockStorage, "test-master-password")
 
 	userID := "test-user-id"
 	recordID := "record-1"
@@ -192,7 +192,7 @@ func TestDataHandler_GetData(t *testing.T) {
 
 func TestDataHandler_CreateData(t *testing.T) {
 	mockStorage := newMockStorage()
-	handler := NewDataHandler(mockStorage)
+	handler := NewDataHandler(mockStorage, "test-master-password")
 
 	userID := "test-user-id"
 
@@ -284,7 +284,7 @@ func TestDataHandler_CreateData(t *testing.T) {
 
 func TestDataHandler_UpdateData(t *testing.T) {
 	mockStorage := newMockStorage()
-	handler := NewDataHandler(mockStorage)
+	handler := NewDataHandler(mockStorage, "test-master-password")
 
 	userID := "test-user-id"
 	recordID := "record-1"
@@ -372,7 +372,7 @@ func TestDataHandler_UpdateData(t *testing.T) {
 
 func TestDataHandler_DeleteData(t *testing.T) {
 	mockStorage := newMockStorage()
-	handler := NewDataHandler(mockStorage)
+	handler := NewDataHandler(mockStorage, "test-master-password")
 
 	userID := "test-user-id"
 	recordID := "record-1"

@@ -15,12 +15,16 @@ import (
 
 // DataHandler обрабатывает запросы для работы с данными.
 type DataHandler struct {
-	storage storage.Storage
+	storage        storage.Storage
+	masterPassword string // Временное решение: в production должен быть только на клиенте
 }
 
 // NewDataHandler создает новый DataHandler.
-func NewDataHandler(storage storage.Storage) *DataHandler {
-	return &DataHandler{storage: storage}
+func NewDataHandler(storage storage.Storage, masterPassword string) *DataHandler {
+	return &DataHandler{
+		storage:        storage,
+		masterPassword: masterPassword,
+	}
 }
 
 // GetAllData получает все записи данных пользователя.
@@ -122,10 +126,9 @@ func (h *DataHandler) CreateData(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Шифруем данные
-	// В реальном приложении мастер-пароль должен передаваться отдельно или храниться на клиенте
-	// Для упрощения используем фиксированный ключ (в production это должно быть иначе)
-	masterPassword := "default-master-password" // TODO: получать от пользователя
-	encryptedData, err := crypto.EncryptData([]byte(req.Data), masterPassword)
+	// ВАЖНО: В production мастер-пароль должен быть только на клиенте!
+	// Это временное решение для упрощения архитектуры.
+	encryptedData, err := crypto.EncryptData([]byte(req.Data), h.masterPassword)
 	if err != nil {
 		writeErrorResponse(w, http.StatusInternalServerError, "failed to encrypt data", protocol.ErrorCodeInternalError)
 		return
@@ -208,8 +211,8 @@ func (h *DataHandler) UpdateData(w http.ResponseWriter, r *http.Request) {
 	}
 	if req.Data != "" {
 		// Шифруем новые данные
-		masterPassword := "default-master-password" // TODO: получать от пользователя
-		encryptedData, err := crypto.EncryptData([]byte(req.Data), masterPassword)
+		// ВАЖНО: В production мастер-пароль должен быть только на клиенте!
+		encryptedData, err := crypto.EncryptData([]byte(req.Data), h.masterPassword)
 		if err != nil {
 			writeErrorResponse(w, http.StatusInternalServerError, "failed to encrypt data", protocol.ErrorCodeInternalError)
 			return

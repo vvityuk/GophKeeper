@@ -1,6 +1,18 @@
 package crypto
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
+
+func init() {
+	// Инициализируем JWT конфигурацию для тестов
+	SetJWTConfig(
+		"test-secret-key-for-testing-only-min-32-chars",
+		time.Hour,
+		7*24*time.Hour,
+	)
+}
 
 func TestGenerateJWT(t *testing.T) {
 	userID := "test-user-id"
@@ -59,4 +71,3 @@ func TestGenerateRefreshToken(t *testing.T) {
 		t.Error("GenerateRefreshToken returned same token twice")
 	}
 }
-
